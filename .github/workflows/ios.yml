@@ -8,10 +8,10 @@ jobs:
     runs-on: macos-latest
 
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
 
-      - name: Set up Python virtual environment
+      - name: Set up Python environment
+        working-directory: myiosapp
         run: |
           python3 -m venv venv
           source venv/bin/activate
@@ -19,22 +19,25 @@ jobs:
           pip install briefcase toga
 
       - name: Create iOS project
+        working-directory: myiosapp
         run: |
           source venv/bin/activate
           briefcase create iOS
 
       - name: Build iOS project
+        working-directory: myiosapp
         run: |
           source venv/bin/activate
           briefcase build iOS
 
       - name: Package iOS IPA
+        working-directory: myiosapp
         run: |
           source venv/bin/activate
           briefcase package iOS
 
-      - name: Upload IPA artifact
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: myapp-ios
-          path: build/myapp/iOS/*.ipa
+          name: myiosapp-ios
+          path: myiosapp/build/myiosapp/iOS/*.ipa
