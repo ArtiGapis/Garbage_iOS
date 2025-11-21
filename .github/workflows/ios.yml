@@ -1,0 +1,35 @@
+name: Build iOS App
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build-ios:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install system dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          pip install briefcase toga
+
+      - name: Create iOS project
+        run: |
+          briefcase create iOS
+
+      - name: Build iOS project
+        run: |
+          briefcase build iOS
+
+      - name: Package iOS .ipa
+        run: |
+          briefcase package iOS
+
+      - name: Upload iOS artifact (.ipa)
+        uses: actions/upload-artifact@v4
+        with:
+          name: myapp-ios
+          path: build/myapp/iOS/MyApp-*.ipa
